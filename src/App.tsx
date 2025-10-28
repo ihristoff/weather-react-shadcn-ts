@@ -5,7 +5,7 @@ import { ThemeProvider } from "./context/theme-provider";
 import Dashboard from "./pages/weather-dashboard";
 import City from "./pages/city-page";
 import {QueryClientProvider, QueryClient} from '@tanstack/react-query'
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 
 const queryClient = new QueryClient();
@@ -16,7 +16,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
 
     <BrowserRouter>
-    <ThemeProvider defaultTheme="white">
+    <ThemeProvider defaultTheme="light">
  <Layout >
         <Routes>
           <Route path = '/' element={<Dashboard/>}/>
@@ -27,6 +27,7 @@ function App() {
     </ThemeProvider>
      
     </BrowserRouter>
+       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
