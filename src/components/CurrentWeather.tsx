@@ -8,6 +8,8 @@ interface CurrentWeatherProps {
   locationName?: GeocodingResponse;
 }
 
+const formatTemp = (t: number) => `${Math.round(t)}°`;
+
 const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
   const {
     weather: [currentWeather],
@@ -15,79 +17,66 @@ const CurrentWeather = ({ data, locationName }: CurrentWeatherProps) => {
     wind: { speed },
   } = data;
 
-  const formatTemp = (t: number) => `${Math.round(t)}°`;
-
   return (
-    <Card className="overflow-hidden bg-background text-foreground">
-      <CardContent className="p-6">
-        {/* Top Section: Location */}
-        <div className="mb-4">
-          <p className="text-sm text-muted-foreground">My Location</p>
-          <h2 className="text-2xl font-bold tracking-tight">
-            {locationName?.name}
-            {locationName?.state && (
-              <span className="text-muted-foreground font-normal">
-                , {locationName.state}
-              </span>
-            )}
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            {locationName?.country}
-          </p>
-        </div>
-
-        {/* Middle Section: Temperature */}
-        <div className="flex items-start gap-4">
-          <div className="flex flex-col items-start">
-            <p className="text-7xl font-bold leading-none">{formatTemp(temp)}</p>
-            <p className="text-sm text-muted-foreground">
-              Feels like {formatTemp(feels_like)}
-            </p>
-          </div>
-
-          <div className="flex flex-col justify-center gap-2 text-sm font-medium ml-2">
-            <div className="flex items-center gap-1 text-blue-500">
-              <ArrowDown className="h-3 w-3" />
-              <span>{formatTemp(temp_min)}</span>
-            </div>
-            <div className="flex items-center gap-1 text-red-500">
-              <ArrowUp className="h-3 w-3" />
-              <span>{formatTemp(temp_max)}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Section: Humidity & Wind */}
-        <div className="mt-6 flex justify-between text-sm font-medium">
+    <Card className="bg-background text-foreground overflow-hidden h-full flex flex-col justify-between">
+      <CardContent className="flex flex-col h-full p-8 gap-4">
+        {/* Location */}
+        <div>
           <div className="flex items-center gap-2">
-            <Droplets className="h-4 w-4 text-blue-500" />
-            <span>Humidity</span>
+            <span className="text-2xl font-bold">{locationName?.name}</span>
+            {locationName?.state && (
+              <span className="text-muted-foreground font-normal">,{` ${locationName.state}`}</span>
+            )}
+          </div>
+          <div className="text-sm text-muted-foreground font-medium">{locationName?.country}</div>
+        </div>
+
+        {/* Temperature row with all details side by side */}
+        <div className="flex items-center gap-8 my-4">
+          {/* Main temp */}
+          <div className="text-7xl font-bold min-w-[94px]">{formatTemp(temp)}</div>
+          {/* Details column */}
+          <div className="flex flex-col gap-2">
+            <span className="text-sm text-muted-foreground">Feels like {formatTemp(feels_like)}</span>
+            <div className="flex gap-4 text-sm font-medium">
+              <span className="flex items-center gap-1 text-blue-500">
+                <ArrowDown className="h-4 w-4" />
+                {formatTemp(temp_min)}
+              </span>
+              <span className="flex items-center gap-1 text-red-500">
+                <ArrowUp className="h-4 w-4" />
+                {formatTemp(temp_max)}
+              </span>
+            </div>
+          </div>
+          {/* Weather visualization */}
+          <div className="flex flex-col items-center justify-center min-w-[120px] ml-auto">
+            <img
+              className="h-20 w-20 object-contain mb-1"
+              src={`https://openweathermap.org/img/wn/${currentWeather.icon}@4x.png`}
+              alt={currentWeather.description}
+            />
+            <div className="text-base font-semibold capitalize text-center">{currentWeather.description}</div>
+          </div>
+        </div>
+
+        {/* Humidity and Wind Speed row */}
+        <div className="flex gap-8 mt-auto justify-start pt-2">
+          <div className="flex items-center gap-2">
+            <Droplets className="h-5 w-5 text-blue-500" />
+            <span className="font-bold">Humidity</span>
             <span className="text-muted-foreground">{humidity}%</span>
           </div>
-
           <div className="flex items-center gap-2">
-            <Wind className="h-4 w-4 text-blue-500" />
-            <span>Wind Speed</span>
+            <Wind className="h-5 w-5 text-blue-500" />
+            <span className="font-bold">Wind Speed</span>
             <span className="text-muted-foreground">{speed} m/s</span>
           </div>
-
-          <div>
-            <div className="relative flex aspect-square w-full max-w-[200px] items-center justify-center">
-                <img className='h-full w-full object-contain' src={`https://openweathermap.org/img/wn/${currentWeather.icon}@4x.png`} alt="" />
-                <div className="absolute bottom-0 text-center">
-                    <p className="text-sm font-medium capitalize">
-                        {currentWeather.description}
-                    </p>
-                </div>
-            </div>
-
-          </div>
         </div>
-
-
       </CardContent>
     </Card>
   );
 };
 
 export default CurrentWeather;
+
