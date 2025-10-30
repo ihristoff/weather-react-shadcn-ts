@@ -42,6 +42,7 @@ export function useGeolocation() {
         });
       },
       (error) => {
+        //  console.log("Geolocation error object:", error);
         let errorMessage: string;
         switch (error.code) {
           case error.PERMISSION_DENIED:
@@ -63,7 +64,7 @@ export function useGeolocation() {
           isLoading: false,
         });
       }, {
-        enableHighAccuracy:true,
+        enableHighAccuracy: false,
         timeout:5000,
         maximumAge: 0,
       }
